@@ -1,0 +1,32 @@
+# Production profile — refuses to start without real secrets (see SecurityStartupValidator)
+spring:
+  datasource:
+    password: ${DB_PASSWORD}
+
+app:
+  jwtSecret: ${JWT_SECRET}
+  default-admin:
+    password: ${ADMIN_PASSWORD}
+  cookie:
+    secure: true
+    same-site: Strict
+
+payment:
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID}
+    key-secret: ${RAZORPAY_KEY_SECRET}
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+
+
+# Actuator: health only in production (no env/beans/prometheus exposure)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

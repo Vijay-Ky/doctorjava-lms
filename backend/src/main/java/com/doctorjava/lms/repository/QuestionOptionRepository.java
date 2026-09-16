@@ -1,0 +1,1 @@
+package com.doctorjava.lms.repository; import com.doctorjava.lms.entity.QuestionOption; import org.springframework.data.jpa.repository.JpaRepository; public interface QuestionOptionRepository extends JpaRepository<QuestionOption,Long>{ }

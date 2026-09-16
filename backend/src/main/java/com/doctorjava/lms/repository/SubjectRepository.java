@@ -1,0 +1,1 @@
+package com.doctorjava.lms.repository; import com.doctorjava.lms.entity.Subject; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface SubjectRepository extends JpaRepository<Subject,Long>{ Optional<Subject> findByNameIgnoreCase(String name); }

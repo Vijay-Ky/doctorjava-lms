@@ -1,0 +1,39 @@
+# ===== Frontend =====
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env*.local
+frontend/frontend.7z
+frontend/*.7z
+frontend/*.zip
+
+# ===== Backend =====
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/.classpath
+backend/.project
+backend/.settings/
+
+# ===== IDE & OS =====
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ===== Env & secrets =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ===== Logs & temp =====
+*.log
+*.tmp
+*.swp
+*.sql.gz
+
+# ===== Large media (keep only optimized logos) =====
+# If logos are very large, prefer optimized versions under 200–300 KB

@@ -1,0 +1,61 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/doctor_java_lms?createDatabaseIfNotExist=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    # No weak default in production — see application-local.yml for local defaults
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+app:
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:3000}
+  # NO fallback secret — production must set JWT_SECRET (min 32 chars)
+  jwtSecret: ${JWT_SECRET:}
+  piston:
+    url: ${PISTON_URL:http://localhost:2000}
+  jwtExpirationMs: ${JWT_EXPIRATION:86400000}
+  default-admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:}
+    email: ${ADMIN_EMAIL:admin@doctorjava.tech}
+  cookie:
+    secure: ${COOKIE_SECURE:false}
+    same-site: ${COOKIE_SAME_SITE:Lax}
+
+server:
+  port: ${PORT:8080}
+
+payment:
+  currency: ${PAYMENT_CURRENCY:INR}
+  success-url: ${PAYMENT_SUCCESS_URL:http://localhost:3000/payment/success}
+  cancel-url: ${PAYMENT_CANCEL_URL:http://localhost:3000/payment/cancel}
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:}
+    key-secret: ${RAZORPAY_KEY_SECRET:}
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Never expose env/beans/heapdump by default
+        include: health
+  endpoint:
+    health:
+      show-details: never

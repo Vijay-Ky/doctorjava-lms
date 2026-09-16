@@ -1,0 +1,1 @@
+package com.doctorjava.lms.repository; import com.doctorjava.lms.entity.MockTest; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface MockTestRepository extends JpaRepository<MockTest,Long>{ List<MockTest> findByPublishedTrueOrderByIdDesc(); Optional<MockTest> findByTestCode(String code); }

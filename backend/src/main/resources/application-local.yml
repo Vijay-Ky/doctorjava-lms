@@ -1,0 +1,43 @@
+# Local / dev profile only — weak defaults allowed here, never in prod
+spring:
+  datasource:
+    password: ${DB_PASSWORD:admin}
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+
+app:
+  jwtSecret: ${JWT_SECRET:doctor-java-lms-local-dev-only-secret-key-min-64-chars-long-xxxxxxxxxxxxxxxxxxxx}
+  jwtExpirationMs: 86400000
+  default-admin:
+    username: admin
+    email: admin@doctorjava.tech
+    password: ${ADMIN_PASSWORD:admin}
+  mail:
+    enabled: false
+  payments:
+    abandoned-hours: 24
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:3000}
+  cookie:
+    secure: false
+    same-site: Lax
+
+payment:
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:rzp_test_placeholder}
+    key-secret: ${RAZORPAY_KEY_SECRET:placeholder_secret}
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:sk_test_placeholder}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_placeholder}
+
+whatsapp:
+  enabled: false
+  provider: ${WHATSAPP_PROVIDER:}
+  api-key: ${WHATSAPP_API_KEY:}
+  phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}

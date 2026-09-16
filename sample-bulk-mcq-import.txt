@@ -1,0 +1,62 @@
+**Question 1:**
+```java
+public class Demo {
+  public static void main(String[] args) {
+    int x = 5;
+    System.out.println(x++ + ++x);
+  }
+}
+```
+What is the output of the program?
+a) 10
+b) 11
+c) 12
+d) Compilation error
+
+**Answer: c) 12**
+Explanation: x++ uses 5 then becomes 6; ++x makes it 7; 5 + 7 = 12.
+
+**Question 2:**
+Which keyword is used to inherit a class in Java?
+a) implements
+b) extends
+c) inherits
+d) super
+
+**Answer: b) extends**
+Explanation: A class uses extends to inherit from another class. implements is for interfaces.
+
+**Question 3:**
+```java
+String s1 = "Java";
+String s2 = "Java";
+System.out.println(s1 == s2);
+```
+What is printed?
+a) true
+b) false
+c) null
+d) Compilation error
+
+**Answer: a) true**
+Explanation: String literals are interned in the string pool, so s1 and s2 refer to the same object.
+
+**Question 4:**
+What is the default value of a boolean instance variable in Java?
+a) true
+b) false
+c) null
+d) 0
+
+**Answer: b) false**
+Explanation: Instance boolean fields are initialized to false by default.
+
+**Question 5:**
+Which of the following is NOT a valid access modifier in Java?
+a) public
+b) private
+c) protected
+d) friendly
+
+**Answer: d) friendly**
+Explanation: Java has public, private, protected, and package-private (default). There is no "friendly" modifier.

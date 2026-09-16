@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: doctor-java-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: doctor_java_lms
+    ports:
+      - "3307:3306"
+    volumes:
+      - doctor-java-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Piston needs privileged mode for isolate/nsjail (code sandbox)
+  piston:
+    image: ghcr.io/engineer-man/piston:latest
+    container_name: doctor-java-piston
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "2000:2000"
+    volumes:
+      - piston-packages:/piston/packages
+
+volumes:
+  doctor-java-mysql:
+  piston-packages:
