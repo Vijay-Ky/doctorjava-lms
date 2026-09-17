@@ -24,19 +24,14 @@ function formatTime(totalSeconds: number) {
   return `${m}:${s}`;
 }
 
-type PaletteStatus = "not-visited" | "not-answered" | "answered" | "review" | "review-answered";
+type PaletteStatus =
+  | "not-visited"
+  | "not-answered"
+  | "answered"
+  | "review"
+  | "review-answered";
 
 export default function TestRunner({
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "You have an in-progress test. Progress will be saved if you leave.";
-      return e.returnValue;
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, []);
-
   test,
   onSubmit,
 }: {
@@ -64,15 +59,29 @@ export default function TestRunner({
 
   const currentQuestion = test.questions[currentIndex];
 
+  // Warn user before leaving the page while a test is in progress
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue =
+        "You have an in-progress test. Progress will be saved if you leave.";
+      return e.returnValue;
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
+
   const buildResult = useCallback((): AttemptResult => {
     let correct = 0;
     let incorrect = 0;
     let unattempted = 0;
-    const topicBreakdown: Record<string, { correct: number; total: number }> = {};
+    const topicBreakdown: Record<string, { correct: number; total: number }> =
+      {};
 
     test.questions.forEach((q) => {
       const a = answers[q.id];
-      if (!topicBreakdown[q.topic]) topicBreakdown[q.topic] = { correct: 0, total: 0 };
+      if (!topicBreakdown[q.topic])
+        topicBreakdown[q.topic] = { correct: 0, total: 0 };
       topicBreakdown[q.topic].total += 1;
 
       if (a.selectedIndex === null) {
@@ -87,7 +96,7 @@ export default function TestRunner({
 
     const timeTakenSeconds = Math.min(
       totalSeconds,
-      Math.round((Date.now() - startTimeRef.current) / 1000)
+      Math.round((Date.now() - startTimeRef.current) / 1000),
     );
 
     return {
@@ -134,27 +143,37 @@ export default function TestRunner({
     if (timeLeft === 0) handleFinalSubmit();
   }, [timeLeft, handleFinalSubmit]);
 
-  const goTo = useCallback((index: number) => {
-    setCurrentIndex(index);
-    setAnswers((prev) => {
-      const q = test.questions[index];
-      if (prev[q.id].visited) return prev;
-      return { ...prev, [q.id]: { ...prev[q.id], visited: true } };
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [test.questions]);
+  const goTo = useCallback(
+    (index: number) => {
+      setCurrentIndex(index);
+      setAnswers((prev) => {
+        const q = test.questions[index];
+        if (prev[q.id].visited) return prev;
+        return { ...prev, [q.id]: { ...prev[q.id], visited: true } };
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [test.questions],
+  );
 
   const selectOption = (optionIndex: number) => {
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion.id]: { ...prev[currentQuestion.id], selectedIndex: optionIndex, visited: true },
+      [currentQuestion.id]: {
+        ...prev[currentQuestion.id],
+        selectedIndex: optionIndex,
+        visited: true,
+      },
     }));
   };
 
   const clearResponse = () => {
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion.id]: { ...prev[currentQuestion.id], selectedIndex: null },
+      [currentQuestion.id]: {
+        ...prev[currentQuestion.id],
+        selectedIndex: null,
+      },
     }));
   };
 
@@ -194,7 +213,8 @@ export default function TestRunner({
 
   const getStatus = (questionId: string): PaletteStatus => {
     const a = answers[questionId];
-    if (a.markedForReview) return a.selectedIndex !== null ? "review-answered" : "review";
+    if (a.markedForReview)
+      return a.selectedIndex !== null ? "review-answered" : "review";
     if (!a.visited) return "not-visited";
     if (a.selectedIndex === null) return "not-answered";
     return "answered";
@@ -205,7 +225,8 @@ export default function TestRunner({
     "not-answered": "bg-rose-500 text-white",
     answered: "bg-emerald-500 text-white",
     review: "bg-purple text-white",
-    "review-answered": "bg-purple text-white ring-2 ring-emerald-400 ring-offset-1",
+    "review-answered":
+      "bg-purple text-white ring-2 ring-emerald-400 ring-offset-1",
   };
 
   const isLowTime = timeLeft <= 60;
@@ -215,14 +236,18 @@ export default function TestRunner({
       {/* header bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/5 bg-white px-5 py-4 shadow-soft">
         <div>
-          <h3 className="font-display text-[15px] font-bold text-ink">{test.title}</h3>
+          <h3 className="font-display text-[15px] font-bold text-ink">
+            {test.title}
+          </h3>
           <p className="text-[12px] text-muted">
             Question {currentIndex + 1} of {test.questions.length}
           </p>
         </div>
         <div
           className={`flex items-center gap-2 rounded-full px-4 py-2 text-[14px] font-bold mono-num ${
-            isLowTime ? "animate-pulse bg-rose-100 text-rose-600" : "bg-purple/10 text-purple"
+            isLowTime
+              ? "animate-pulse bg-rose-100 text-rose-600"
+              : "bg-purple/10 text-purple"
           }`}
         >
           <Clock size={16} />
@@ -250,7 +275,8 @@ export default function TestRunner({
 
               <div className="mt-6 space-y-3">
                 {currentQuestion.options.map((opt, i) => {
-                  const selected = answers[currentQuestion.id].selectedIndex === i;
+                  const selected =
+                    answers[currentQuestion.id].selectedIndex === i;
                   return (
                     <button
                       key={i}
@@ -297,7 +323,9 @@ export default function TestRunner({
                 }`}
               >
                 <Flag size={14} />
-                {answers[currentQuestion.id].markedForReview ? "Marked" : "Mark for Review"}
+                {answers[currentQuestion.id].markedForReview
+                  ? "Marked"
+                  : "Mark for Review"}
               </button>
             </div>
 
@@ -358,19 +386,28 @@ export default function TestRunner({
 
           <div className="mt-5 space-y-2 text-[12px] text-charcoal">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-emerald-500" /> Answered</span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded bg-emerald-500" /> Answered
+              </span>
               <span className="font-semibold">{stats.answered}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-rose-500" /> Not Answered</span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded bg-rose-500" /> Not Answered
+              </span>
               <span className="font-semibold">{stats.notAnswered}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-purple" /> Marked for Review</span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded bg-purple" /> Marked for Review
+              </span>
               <span className="font-semibold">{stats.review}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded border border-ink/20 bg-white" /> Not Visited</span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded border border-ink/20 bg-white" />{" "}
+                Not Visited
+              </span>
               <span className="font-semibold">{stats.notVisited}</span>
             </div>
           </div>
@@ -415,9 +452,24 @@ export default function TestRunner({
                 Submit the test now?
               </h4>
               <div className="mt-3 space-y-1.5 text-[13px] text-muted">
-                <p>Answered: <span className="font-semibold text-emerald-600">{stats.answered}</span></p>
-                <p>Not Answered: <span className="font-semibold text-rose-600">{stats.notAnswered + stats.notVisited}</span></p>
-                <p>Marked for Review: <span className="font-semibold text-purple">{stats.review}</span></p>
+                <p>
+                  Answered:{" "}
+                  <span className="font-semibold text-emerald-600">
+                    {stats.answered}
+                  </span>
+                </p>
+                <p>
+                  Not Answered:{" "}
+                  <span className="font-semibold text-rose-600">
+                    {stats.notAnswered + stats.notVisited}
+                  </span>
+                </p>
+                <p>
+                  Marked for Review:{" "}
+                  <span className="font-semibold text-purple">
+                    {stats.review}
+                  </span>
+                </p>
               </div>
               <p className="mt-3 text-[12.5px] text-muted">
                 Once submitted, you cannot change your answers.
